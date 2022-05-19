@@ -1,0 +1,10 @@
+!*/migrations/__init__.py
+.idea
+*/__pycache__
+*.pyc
+*/migrations/*.py
+.DS_Store
+static/
+get-pip.py
+venv
+db.sqlite3
