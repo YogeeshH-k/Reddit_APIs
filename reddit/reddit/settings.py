@@ -40,11 +40,6 @@ INSTALLED_APPS = [
     'users',
     'uploads',
     'rest_framework',
-    'social_django',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
