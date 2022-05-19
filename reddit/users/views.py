@@ -22,11 +22,35 @@ class EmailSignupView(generics.CreateAPIView):
             user = serializer.save()
             token = RefreshToken.for_user(user)
             data = EmailSignupSerializer(instance=user).data
-            data['access'] = str(token.access_token)
-            data['refresh'] = str(token)
-            return Response("success", data=data)
+            response_data = {
+                'access': str(token.access_token),
+                'refresh': str(token)
+            }
+            print(response_data)
+
+            return Response("success")
         else:
             return Response("Request Failed")
+
+
+class UserDetailsUpdateView(generics.UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserDetailsSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def update(self, request, *args, **kwargs):
+        try:
+            user = User.objects.get(user_id=request.user.id)
+            data = request.data
+        except Exception as e:
+            return Response('Invalid User ID')
+
+        serializer = self.get_serializer(user, data=data, partial=True)
+        if not serializer.is_valid():
+            return Response('Please enter valid Data')
+        serializer.save()
+        data = UserDetailsSerializer(instance=user).data
+        return Response('Successfully updated data', data)
 
 
 class UserListView(generics.ListAPIView):
