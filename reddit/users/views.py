@@ -39,18 +39,14 @@ class UserDetailsUpdateView(generics.UpdateAPIView):
     permission_classes = (IsAuthenticated,)
 
     def update(self, request, *args, **kwargs):
-        try:
-            user = User.objects.get(user_id=request.user.id)
-            data = request.data
-        except Exception as e:
-            return Response('Invalid User ID')
-
+        user = User.objects.get(id=request.user.id)
+        data = request.data
         serializer = self.get_serializer(user, data=data, partial=True)
         if not serializer.is_valid():
             return Response('Please enter valid Data')
         serializer.save()
-        data = UserDetailsSerializer(instance=user).data
-        return Response('Successfully updated data', data)
+        updated_data = UserDetailsSerializer(instance=user).data
+        return Response(f'Successfully updated data :{updated_data}')
 
 
 class UserListView(generics.ListAPIView):
