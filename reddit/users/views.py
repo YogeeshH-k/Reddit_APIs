@@ -1,13 +1,52 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework import generics
-
-# Create your views here.
+from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
+from rest_framework_simplejwt.tokens import RefreshToken
 from .filters import UserPostFilterBackend
 from .models import User
-from .serializers import UserDetailsSerializer, UserPostsSerializer, UserListSerializer, PostSerializer
+from .serializers import UserDetailsSerializer, UserPostsSerializer, UserListSerializer, PostSerializer, \
+    EmailSignupSerializer
 from uploads.models import Posts
+
+
+class EmailSignupView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = EmailSignupSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            token = RefreshToken.for_user(user)
+            data = EmailSignupSerializer(instance=user).data
+            response_data = {
+                'access': str(token.access_token),
+                'refresh': str(token)
+            }
+            print(response_data)
+
+            return Response("success")
+        else:
+            return Response("Request Failed")
+
+
+class UserDetailsUpdateView(generics.UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserDetailsSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def update(self, request, *args, **kwargs):
+        user = User.objects.get(id=request.user.id)
+        data = request.data
+        serializer = self.get_serializer(user, data=data, partial=True)
+        if not serializer.is_valid():
+            return Response('Please enter valid Data')
+        serializer.save()
+        updated_data = UserDetailsSerializer(instance=user).data
+        return Response(f'Successfully updated data :{updated_data}')
 
 
 class UserListView(generics.ListAPIView):
@@ -24,7 +63,7 @@ class UserListView(generics.ListAPIView):
 class UserDetailView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserDetailsSerializer
-    lookup_field = 'user_id'
+    lookup_field = 'username'
     lookup_url_kwarg = 'id'
 
     def retrieve(self, request, *args, **kwargs):
