@@ -1,19 +1,14 @@
-from django.http import HttpResponse
-from django.shortcuts import render
 from rest_framework import generics
-from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from .filters import UserPostFilterBackend
-from .models import User
-from .serializers import UserDetailsSerializer, UserPostsSerializer, UserListSerializer, PostSerializer, \
-    EmailSignupSerializer
-from uploads.models import Posts
+from reddit.users.models import User
+from reddit.users.api.serializers import UserDetailsSerializer, UserListSerializer, EmailSignupSerializer
+
+from reddit.users.tasks import send_forgot_username_mail
 
 
 class EmailSignupView(generics.CreateAPIView):
-    queryset = User.objects.all()
     serializer_class = EmailSignupSerializer
 
     def create(self, request, *args, **kwargs):
@@ -73,14 +68,26 @@ class UserDetailView(generics.RetrieveAPIView):
         return response
 
 
-class UserPostsView(generics.ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserPostsSerializer
+class RequestForgotUsernameMailView(generics.CreateAPIView):
+    serializer_class = UserDetailsSerializer
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
-        response = Response(serializer.data)
-        return response
+    def create(self, request, *args, **kwargs):
+        email = request.data.get('email')
+        user = User.objects.get(email=email)
+        send_forgot_username_mail(user.username, email)
+        return Response("Success")
 
 
+# class LogoutView(generics.CreateAPIView):
+#     permission_classes = (IsAuthenticated,)
+#
+#     def create(self, request, *args, **kwargs):
+#         try:
+#             refresh_token = request.data["refresh_token"]
+#             token = RefreshToken(refresh_token)
+#             token.blacklist()
+#             return Response("Successfully Logged out")
+#
+#         except Exception as e:
+#             print(e)
+#             return Response("Bad request, please try again")
