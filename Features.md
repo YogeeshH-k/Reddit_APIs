@@ -129,12 +129,13 @@ Search:
 - allows an user to search for a particular subreddit or user
 - shows any response that matches the search keyword
 
-
 Upvote/downvote:
 - allows a logged in user to upvote or downvote a post/comment
 - saves voted by user_id against an entry in the model
 
-
+Fllow/unfollow:
+- aloows a logged in user to follow/unfollow users
+- saves follower_id and followed_by_id in the model
 
 
 
