@@ -3,7 +3,7 @@
 ACCOUNT
 
 Signup with email:
-- takes an email, password and an unique username 
+- takes an unique email, password and an unique username 
 - creates a new user in the db and stores the password in a hash format
 - sends out access and refresh token(JWT) as response
 
