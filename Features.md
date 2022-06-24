@@ -133,7 +133,7 @@ Upvote/downvote:
 - allows a logged in user to upvote or downvote a post/comment
 - saves voted by user_id against an entry in the model
 
-Fllow/unfollow:
+Follow/unfollow:
 - aloows a logged in user to follow/unfollow users
 - saves follower_id and followed_by_id in the model
 
