@@ -22,7 +22,7 @@ Login with Social(gmail):
 Forgot username:
 - login needs username and password in reddit
 - if username is forgotten, we can use this feature to send out an email to the registered email id with the matching username
-- takes an email id as input, sends an email to the same if it matches with an entry in users model, else throws error
+- takes an email id as input, sends an email to the same if it matches with an entry in users model, else sends an error response
 
 Forgot password:
 - this can be used to reset a password when a password is forgotten, to send out an email with the reset link 
