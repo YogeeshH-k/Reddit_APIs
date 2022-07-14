@@ -15,7 +15,7 @@ Login:
 - takes username and password as input
 - if they match an entry in the users model, then send access and refresh token(JWT) as response
 
-Login with Social(gmail):
+Login with Social(gmail):[ToDo]
 - allows logging in with a gmail account
 - create a new user if user not present already i.e., generate a random username
 
@@ -105,7 +105,7 @@ Delete post:
 - performs a soft delete
 
 
-COMMENTS:
+COMMENTS: [ToDo]
 
 Create a comment:
 - allows an user to add a comment
@@ -129,13 +129,21 @@ Search:
 - allows an user to search for a particular subreddit or user
 - shows any response that matches the search keyword
 
-Upvote/downvote:
-- allows a logged in user to upvote or downvote a post/comment
+Upvote:
+- allows a logged in user to upvote post/comment
 - saves voted by user_id against an entry in the model
 
-Follow/unfollow:
-- aloows a logged in user to follow/unfollow users
+Downvote:
+- allows a logged in user to downvote post/comment
+- saves voted by user_id against an entry in the mode0l
+
+
+Follow:
+- allows a logged in user to follow users
 - saves follower_id and followed_by_id in the model
 
-
+Unfollow:
+- allows a logged in user to follow users
+- marks is_deleted as true against the corresponding entry in the database table if it exists.
+- else says that user does not follow the user they wish to unfollow.
 
